@@ -1,56 +1,105 @@
 const inquirer = require("inquirer");
 const cTable = require('console.table')
 const orm = require("./config/orm.js");
+var connection = require("./config/connection.js");
 
-const employeeInquirer = () => {
+const mainInquirer = () => {
     inquirer
         .prompt([
             {
                 type: 'list',
                 message: 'What would you like to do?',
                 name: 'action',
-                choices: ['View Departments', 'View roles', 'View employees', 'Update Employee role', 'Add employee', 'Add Department', 'Add Role'],
+                choices: ['View Departments', 'View Roles', 'View Employees', 'Update Employee roles', 'Add Employee', 'Add Department', 'Add Role'],
             }
         ])
         .then((response) => {
             if (response.action === 'View Departments') {
-                console.log(response.action);
+                
                 viewDepartments();
-            } else if (response.action === 'View roles') {
-                console.log(response.action);
+                mainInquirer();
+            } else if (response.action === 'View Roles') {
+                
                 viewRoles();
-            } else if (response.action === 'View employees') {
-                console.log(response.action);
+                mainInquirer();
+            } else if (response.action === 'View Employees') {
+                
                 viewEmployee();
-            } else if (response.action === 'Update employee roles') {
-                console.log(response.action);
+                mainInquirer();
+            } else if (response.action === 'Update Employee roles') {
+                
                 updateInquirer();
-            } else if (response.action === 'Add employee') {
-                console.log(response.action);
+
+            } else if (response.action === 'Add Employee') {
+                
                 addEmployeeInquirer();
+
             } else if (response.action === 'Add Department') {
-                console.log(response.action);
+                
                 addDepartmentInquirer();
+
             } else if (response.action === 'Add Role') {
-                console.log(response.action);
+                
                 addRoleInquirer();
-        }
-    });
+
+            }
+        });
 };
 
-employeeInquirer();
+mainInquirer();
 
 
 const viewDepartments = () => {
     orm.allDepartments();
-    employeeInquirer();
+    
 };
 
 const viewRoles = () => {
     orm.allRoles();
-    employeeInquirer();
+    mainInquirer();
+};
+
+const viewEmployee = () => {
+    orm.allEmployees();
+    mainInquirer();
+};
+
+const addEmployeeInquirer = () => {
+
+};
+
+const addRoleInquirer = () => {
+
+};
+
+const addDepartmentInquirer = () => {
+
 };
 
 const updateInquirer = () => {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "employeeId",
+                message: "Which employee (enter id) would you like to change roles for?"
+            },
+            {
+                type: "input",
+                name: "roleId",
+                message: "Please input the id of the role you want this employee to have"
+            }
+        ])
+        .then((response) => {
+            let queryString = "UPDATE employee SET role_id = ? WHERE employee.id = ?"
 
+            connection.query(queryString, [parseInt(response.roleId), parseInt(response.employeeId)], function (err, result) {
+                if (err) {
+                    throw err;
+                };
+                console.table(result)
+                mainInquirer();
+            });
+        });
+        
 };

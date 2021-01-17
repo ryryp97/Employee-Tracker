@@ -19,13 +19,25 @@ const orm = {
         });
     },
     allEmployees: () => {
-        connection.query("SELECT * FROM department", function (err, result) {
+        let queryString = "SELECT first_name, last_name, title, salary FROM role INNER JOIN employee ON role.id = role_id"
+        
+        connection.query(queryString, function (err, result) {
             if (err) {
                 throw err;
             };
             console.table(result)
         });
     },
+    updateRole: () => {
+        let queryString = "UPDATE employee SET role = ? WHERE employee.id = ?"
+        
+        connection.query(queryString, [parseInt(response.roleId), parseInt(response.employeeId)], function (err, result) {
+            if (err) {
+                throw err;
+            };
+            console.table(result)
+        });
+    }
 
 
 };
