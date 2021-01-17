@@ -1,7 +1,7 @@
 var connection = require("./connection.js");
 
-const orm {
-
+const orm = {
+    
 };
 
 module.exports = orm;
